@@ -12,12 +12,30 @@
     <link rel="import" href="elements/codelab.html">
     <link rel="stylesheet" type="text/css" href="css/main.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <style>
         body {
             font-family: "Roboto", sans-serif;
         }
     </style>
-
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(function() {
+                $.each(document.images, function() {
+                    var that = this;
+                    var src = $(that).attr('src') || '';
+                    if (!src.length > 0) {
+                        var fsrc = $(that).attr('fsrc');
+                        var img = new Image();
+                        img.src = fsrc;
+                        $(img).load(function() {
+                            that.src = this.src;
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 
 <body unresolved class="fullbleed">
@@ -26,7 +44,7 @@
 
         <google-codelab-step label="What is TDD?" duration="20">
             <p>TDD stand for Test Driven Development. It's a software development process which focuses on writing test.</p>
-            <img src="img/tdd_flow.gif" />
+            <img fsrc="img/tdd_flow.gif" />
             <h2>Test-drivent development cycle:</h2>
             <ol>
                 <li>Write a failing test.</li>
@@ -127,7 +145,7 @@ public class ExampleUnitTest {
                 <li><a href="https://jsonplaceholder.typicode.com/photos?userId=1">/photos?userId=1</a></li>
             </ul>
             <p>The Wireframe will look like this:</p>
-            <img src="img/wireframe.jpeg" />
+            <img fsrc="img/wireframe.jpeg" />
             <p>Comments and photos will be persisted by <a href="https://realm.io/">Realm</a>. Others libraries will be used are: Dagger2, Retrofit2,RxAndroid.</p>
             <p>Project structure will look like this:</p>
             <table>
@@ -228,7 +246,7 @@ public class ExampleUnitTest {
                 </tbody>
             </table>
             <p>Let's get started by create a new project.</p>
-            <img src="img/newproject.png" />
+            <img fsrc="img/newproject.png" />
             <p>Add the following dependencies, we'll add more later</p>
             <code>dependencies.gradle</code>
             <pre><code>ext{
@@ -629,7 +647,7 @@ public Observable&lt;List&lt;User&gt;&gt; getUsers() {
     return mApiService.getUsers();
 }</code></pre>
             <p>Then run <code>RemoteDataSourceImpl</code> again</p>
-            <img src="img/test-get-users.png" style="max-width: 361px;" />
+            <img fsrc="img/test-get-users.png" style="max-width: 361px;" />
             <p>Nothing to refactor, keep moving</p>
             <p>If <i>RemoteDataSource</i> has any problem, an exception should be thrown, it's a feature of RxJava, but we'll test it anyway.</p>
             <pre><code>@Test(expected = Exception.class)
@@ -640,7 +658,7 @@ public void testGetUsersFailed() throws Exception {
 }</code></pre>
 
             <p><code>getPhotos(int userId)</code> and <code>getComments(int userId)</code> are similar to <code>getUsers()</code></p>
-            <img src="img/test-remote-datasource.png" style="max-width: 361px;" />
+            <img fsrc="img/test-remote-datasource.png" style="max-width: 361px;" />
             <p>We'll use <code>MockWebServer</code> to test our <code>RemoteDataSourceImpl</code> with server:</p>
             <p>Add the following dependency to <code>build.gradle</code></p>
             <pre><code>
@@ -1085,9 +1103,9 @@ public void testGetCommentsFromLocal() throws Exception {
         return Observable.concat(mLocalDataSource.getComments(userId),
                 mRemoteDataSource.getComments(userId));
     }</code></pre>
-            <p><img src="img/test-fail.png" class="test-result"><code>PlaceHolderRepositoryImpl</code></p>
-            <p><img src="img/test-fail.png" class="test-result level-1"><code>testGetCommentsFromServer</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromLocal</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result"><code>PlaceHolderRepositoryImpl</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result level-1"><code>testGetCommentsFromServer</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromLocal</code></p>
             <pre><code>java.lang.AssertionError: Unexpected onError events: 1
 
 	at rx.observers.TestSubscriber.assertNoErrors(TestSubscriber.java:308)
@@ -1107,9 +1125,9 @@ public Observable&lt;List&lt;Comment&gt;&gt; getComments(int userId) {
             mRemoteDataSource.getComments(userId));
 }</code></pre>
             <p>And run again</p>
-            <p><img src="img/test-fail.png" class="test-result"><code>PlaceHolderRepositoryImpl</code></p>
-            <p><img src="img/test-fail.png" class="test-result level-1"><code>testGetCommentsFromServer</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromLocal</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result"><code>PlaceHolderRepositoryImpl</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result level-1"><code>testGetCommentsFromServer</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromLocal</code></p>
             <pre><code>java.lang.AssertionError: Number of items does not match. Provided: 1  Actual: 2.
 Provided values: [[com.example.androidtdd.data.model.Comment@365185bd, com.example.androidtdd.data.model.Comment@18bf3d14, com.example.androidtdd.data.model.Comment@4fb64261, com.example.androidtdd.data.model.Comment@42607a4f, com.example.androidtdd.data.model.Comment@782663d3, com.example.androidtdd.data.model.Comment@1990a65e]]
 Actual values: [null, [com.example.androidtdd.data.model.Comment@365185bd, com.example.androidtdd.data.model.Comment@18bf3d14, com.example.androidtdd.data.model.Comment@4fb64261, com.example.androidtdd.data.model.Comment@42607a4f, com.example.androidtdd.data.model.Comment@782663d3, com.example.androidtdd.data.model.Comment@1990a65e]]
@@ -1119,9 +1137,9 @@ Actual values: [null, [com.example.androidtdd.data.model.Comment@365185bd, com.e
             .onErrorReturn(error -> null),
     mRemoteDataSource.getComments(userId))
         .first(comments -> comments != null && comments.size() > 0);</code></pre>
-            <p><img src="img/test-ok.png" class="test-result"><code>PlaceHolderRepositoryImpl</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromServer</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromLocal</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result"><code>PlaceHolderRepositoryImpl</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromServer</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromLocal</code></p>
             <p>Good, now we move to the last step, save comment if it comes from remote</p>
             <pre><code>@Test
     public void testSaveCommentsComeFromServer() throws Exception {
@@ -1138,10 +1156,10 @@ Actual values: [null, [com.example.androidtdd.data.model.Comment@365185bd, com.e
         commentTestSubscriber.assertValue(comments);
     }</code></pre>
             <p>We will have these output:</p>
-            <p><img src="img/test-fail.png" class="test-result"><code>PlaceHolderRepositoryImpl</code></p>
-            <p><img src="img/test-fail.png" class="test-result level-1"><code>testSaveCommentsComeFromServer</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromServer</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromLocal</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result"><code>PlaceHolderRepositoryImpl</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result level-1"><code>testSaveCommentsComeFromServer</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromServer</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromLocal</code></p>
             <pre><code>Wanted but not invoked:
 mMockLocalDataSource.saveComment(
     [com.example.androidtdd.data.model.Comment@4cf4d528],
@@ -1154,10 +1172,10 @@ mMockLocalDataSource.saveComment(
                         .doOnNext(comments -> mLocalDataSource.saveComment(comments, userId)))
                 .first(comments -> comments != null && comments.size() > 0);</code></pre>
             <p>And run our test again</p>
-            <p><img src="img/test-ok.png" class="test-result"><code>PlaceHolderRepositoryImpl</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testSaveCommentsComeFromServer</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromServer</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromLocal</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result"><code>PlaceHolderRepositoryImpl</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testSaveCommentsComeFromServer</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromServer</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetCommentsFromLocal</code></p>
             <p>Similar to <code>getComments</code>, <code>getPhotos</code> will be like this:</p>
             <code>PlaceHolderRepositoryImplTest</code>
             <pre><code>     @Test
@@ -1408,8 +1426,8 @@ public void testGetUsersSuccess() throws Exception {
     verify(mMockHomeMvpView).showUsers(users);
 }</code></pre>
             <p>Output for <code>testGetUsersSuccess</code> will look like this:</p>
-            <p><img src="img/test-fail.png" class="test-result"><code>HomePresenterTest</code></p>
-            <p><img src="img/test-fail.png" class="test-result level-1"><code>testGetUsersSuccess</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result"><code>HomePresenterTest</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result level-1"><code>testGetUsersSuccess</code></p>
             <pre><code>Wanted but not invoked:
 mMockHomeMvpView.showLoading();
 -> at com.example.androidtdd.ui.home.HomePresenterTest.testGetUsersSuccess(HomePresenterTest.java:50)
@@ -1428,8 +1446,8 @@ Actually, there were zero interactions with this mock.</code></pre>
             });
 }</code></pre>
             <p>And run again:</p>
-            <p><img src="img/test-ok.png" class="test-result"><code>HomePresenterTest</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersSuccess</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result"><code>HomePresenterTest</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersSuccess</code></p>
             <code>testGetUsersFailed</code>
             <pre><code>@Test
 public void testGetUsersFailed() throws Exception {
@@ -1442,9 +1460,9 @@ public void testGetUsersFailed() throws Exception {
     verify(mMockHomeMvpView, times(0)).showUsers(any(List.class));
     verify(mMockHomeMvpView).showEmpty();
 }</code></pre>
-            <p><img src="img/test-fail.png" class="test-result"><code>HomePresenterTest</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersSuccess</code></p>
-            <p><img src="img/test-fail.png" class="test-result level-1"><code>testGetUsersFailed</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result"><code>HomePresenterTest</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersSuccess</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result level-1"><code>testGetUsersFailed</code></p>
             <p>Now , we must implement <code>getUsers</code> to cover the error.</p>
             <pre><code>public void getUsers() {
     getMvpView().showLoading();
@@ -1459,9 +1477,9 @@ public void testGetUsersFailed() throws Exception {
                     getMvpView().showError(error.getMessage());
                 });
 }</code></pre>
-            <p><img src="img/test-ok.png" class="test-result"><code>HomePresenterTest</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersSuccess</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersFailed</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result"><code>HomePresenterTest</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersSuccess</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersFailed</code></p>
             <p>All is green, now we move to the last one <code>showDetail</code></p>
 
             <code>HomePresenterTest</code>
@@ -1477,14 +1495,14 @@ public void testViewDetail() throws Exception {
     getMvpView().viewDetail(user);
 }
 </code></pre>
-            <p><img src="img/test-ok.png" class="test-result"><code>HomePresenterTest</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersSuccess</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersFailed</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testViewDetail</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result"><code>HomePresenterTest</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersSuccess</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersFailed</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testViewDetail</code></p>
             <p><code>CommentPresenter</code>,<code>DetailPresenter</code> and <code>PhotoPresenter</code> are similar to <code>HomePresenter</code></p>
         </google-codelab-step>
         <google-codelab-step label="UI Testing">
-            <img src="img/home-outline.png" />
+            <img fsrc="img/home-outline.png" />
             <p>Home consisted of the following elements</p>
             <ol>
                 <li><code>RecyclerView</code> with id :<code>R.id.recycler_users</code></li>
@@ -1797,8 +1815,8 @@ public class HomeActivity extends BaseActivity implements HomeMvpView {
         tools:text=&quot;www.example.com&quot; /&gt;
 &lt;/LinearLayout&gt;</code></pre>
             <p>Then run <code>testGetUsersAndDisplayData</code> again:</p>
-            <p><img src="img/test-fail.png" class="test-result"><code>HomeActivityTest</code></p>
-            <p><img src="img/test-fail.png" class="test-result level-1"><code>testGetUsersAndDisplayData</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result"><code>HomeActivityTest</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result level-1"><code>testGetUsersAndDisplayData</code></p>
             <pre> <code>android.support.test.espresso.base.DefaultFailureHandler$AssertionFailedWithCauseError: 'has descendant: with text: is "72e950a3-76e7-4c08-b453-3c1da232f7bb"' doesn't match the selected view.
 Expected: has descendant: with text: is "72e950a3-76e7-4c08-b453-3c1da232f7bb"
 Got: "LinearLayout{id=-1, visibility=VISIBLE, width=704, height=156, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=false, is-selected=false, root-is-layout-requested=false, has-input-connection=false, x=0.0, y=0.0, child-count=4}"
@@ -1825,8 +1843,8 @@ Got: "LinearLayout{id=-1, visibility=VISIBLE, width=704, height=156, has-focus=f
     ...
 }
 </code></pre>
-            <p><img src="img/test-ok.png" class="test-result"><code>HomeActivityTest</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayData</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result"><code>HomeActivityTest</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayData</code></p>
             <p>It's green now, we'll move to the next one</p>
             <code>HomeActivityTest</code>
             <pre><code>
@@ -1852,9 +1870,9 @@ public class HomeActivityTest {
         Espresso.unregisterIdlingResources(EspressoIdlingResource.getIdlingResource());
     }
 }</code></pre>
-            <p><img src="img/test-fail.png" class="test-result"><code>HomeActivityTest</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayData</code></p>
-            <p><img src="img/test-fail.png" class="test-result level-1"><code>testGetUsersAndDisplayError</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result"><code>HomeActivityTest</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayData</code></p>
+            <p><img fsrc="img/test-fail.png" class="test-result level-1"><code>testGetUsersAndDisplayError</code></p>
             <pre><code>
 android.support.test.espresso.NoMatchingRootException: Matcher 'with decor view not is <DecorView@39d7d43[HomeActivity]>' did not match any of the following roots: [Root{application-window-token=android.view.ViewRootImpl$W@b0aefc0, window-token=android.view.ViewRootImpl$W@b0aefc0, has-window-focus=true, layout-params-type=1, layout-params-string=WM.LayoutParams{(0,0)(fillxfill) ty=1 fl=#81810100 pfl=0x20000 wanim=0x1030468 needsMenuKey=2}, decor-view-string=DecorView{id=-1, visibility=VISIBLE, width=768, height=1280, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=false, is-selected=false, root-is-layout-requested=false, has-input-connection=false, x=0.0, y=0.0, child-count=3}}]
 at dalvik.system.VMStack.getThreadStackTrace(Native Method)</code></pre>
@@ -1864,9 +1882,9 @@ public void showError(String message) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 }</code></pre>
             <p>Then run again</p>
-            <p><img src="img/test-ok.png" class="test-result"><code>HomeActivityTest</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayData</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayError</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result"><code>HomeActivityTest</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayData</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayError</code></p>
             <p>The last one for <code>HomeActivity</code> is click on user will navigate to <code>DetailActivity</code>.</p>
             <p>We'll use espresso-intents for <code>viewDetail</code> </p>
             <code>build.gradle</code>
@@ -1937,10 +1955,10 @@ Recorded intents:[]</code></pre>
 }
 </code></pre>
             <p>Great, it's green now</p>
-            <p><img src="img/test-ok.png" class="test-result"><code>HomeActivityTest</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayData</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayError</code></p>
-            <p><img src="img/test-ok.png" class="test-result level-1"><code>testClickOnUserNavigateToDetail</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result"><code>HomeActivityTest</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayData</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testGetUsersAndDisplayError</code></p>
+            <p><img fsrc="img/test-ok.png" class="test-result level-1"><code>testClickOnUserNavigateToDetail</code></p>
             <p><strong>Now, it's your time to practice, implememt <code>DetailActivity</code>, <code>CommentActivity</code> and <code>PhotoActivity</code></strong></p>
             <p><i>Because we're mocking repository, you may want to mock <code>getPhotos</code> and <code>getComments</code> in <code>DetailActivityTest</code>.</i></p>
         </google-codelab-step>
