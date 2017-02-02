@@ -1,0 +1,8 @@
+.test-result {
+    max-width: 18px !important;
+    vertical-align: middle !important;
+}
+
+.test-result.level-1 {
+    padding-left: 1em;
+}
