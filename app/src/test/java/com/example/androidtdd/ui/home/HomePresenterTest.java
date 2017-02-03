@@ -4,7 +4,6 @@ import com.example.androidtdd.MockHelper;
 import com.example.androidtdd.data.PlaceHolderRepository;
 import com.example.androidtdd.data.model.User;
 import com.example.androidtdd.util.RxSchedulerOverrideRule;
-import com.google.gson.Gson;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,6 +19,7 @@ import rx.Observable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,6 +55,29 @@ public class HomePresenterTest {
         verify(mMockHomeMvpView).hideLoading();
         verify(mMockHomeMvpView, times(0)).showError(anyString());
         verify(mMockHomeMvpView).showUsers(expected);
+    }
+
+    @Test
+    public void testGetUsersReturnNull() throws Exception {
+        when(mMockRepository.getUsers()).thenReturn(Observable.just(null));
+        mHomePresenter.getUsers();
+        verify(mMockRepository).getUsers();
+        verify(mMockHomeMvpView).showLoading();
+        verify(mMockHomeMvpView).hideLoading();
+        verify(mMockHomeMvpView, times(0)).showError(anyString());
+        verify(mMockHomeMvpView, times(0)).showUsers(any(List.class));
+    }
+
+    @Test
+    public void testGetUsersReturnEmptyList() throws Exception {
+        List users = mock(List.class);
+        when(mMockRepository.getUsers()).thenReturn(Observable.just(users));
+        mHomePresenter.getUsers();
+        verify(mMockRepository).getUsers();
+        verify(mMockHomeMvpView).showLoading();
+        verify(mMockHomeMvpView).hideLoading();
+        verify(mMockHomeMvpView, times(0)).showError(anyString());
+        verify(mMockHomeMvpView, times(0)).showUsers(any(List.class));
     }
 
     @Test

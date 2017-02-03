@@ -6,6 +6,7 @@ import com.example.androidtdd.data.model.Comment;
 import com.example.androidtdd.data.model.User;
 import com.example.androidtdd.util.RxSchedulerOverrideRule;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,6 +20,7 @@ import rx.Observable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,5 +72,35 @@ public class CommentPresenterTest {
         verify(mMockCommentMvpView).hideLoading();
         verify(mMockCommentMvpView, times(0)).showComments(any(List.class));
         verify(mMockCommentMvpView, times(1)).showError(message);
+    }
+    @Test
+    public void testGetCommentsReturnNull() throws Exception {
+        when(mMockPlaceHolderRepository.getComments(USER_ID))
+                .thenReturn(Observable.just(null));
+        User user = MockHelper.makeUser(USER_ID);
+        mCommentPresenter.getComments(user);
+        verify(mMockCommentMvpView).showLoading();
+        verify(mMockCommentMvpView).hideLoading();
+        verify(mMockCommentMvpView, times(0)).showComments(any(List.class));
+        verify(mMockCommentMvpView, times(0)).showError(anyString());
+        verify(mMockCommentMvpView, times((1))).showEmpty();
+
+    }
+    @Test
+    public void testGetCommentsReturnEmptyList() throws Exception {
+        when(mMockPlaceHolderRepository.getComments(USER_ID))
+                .thenReturn(Observable.just(mock(List.class)));
+        User user = MockHelper.makeUser(USER_ID);
+        mCommentPresenter.getComments(user);
+        verify(mMockCommentMvpView).showLoading();
+        verify(mMockCommentMvpView).hideLoading();
+        verify(mMockCommentMvpView, times(0)).showComments(any(List.class));
+        verify(mMockCommentMvpView, times(0)).showError(anyString());
+        verify(mMockCommentMvpView, times((1))).showEmpty();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mCommentPresenter.detachView();
     }
 }

@@ -9,6 +9,7 @@ import com.example.androidtdd.data.model.User;
 import com.example.androidtdd.util.RxSchedulerOverrideRule;
 import com.google.gson.Gson;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -83,5 +84,37 @@ public class PhotoPresenterTest {
         verify(mMockPhotoMvpView, times(0)).showPhotos(any(List.class));
         verify(mMockPhotoMvpView, times(1)).showError(message);
         verify(mMockPhotoMvpView, times((1))).showEmpty();
+    }
+
+    @Test
+    public void testGetPhotosReturnNull() throws Exception {
+        when(mMockPlaceHolderRepository.getPhotos(USER_ID))
+                .thenReturn(Observable.just(null));
+        User user = MockHelper.makeUser(USER_ID);
+        mPhotoPresenter.getPhotos(user);
+        verify(mMockPhotoMvpView).showLoading();
+        verify(mMockPhotoMvpView).hideLoading();
+        verify(mMockPhotoMvpView, times(0)).showPhotos(any(List.class));
+        verify(mMockPhotoMvpView, times(0)).showError(anyString());
+        verify(mMockPhotoMvpView, times((1))).showEmpty();
+
+    }
+    @Test
+    public void testGetPhotosReturnEmptyList() throws Exception {
+        when(mMockPlaceHolderRepository.getPhotos(USER_ID))
+                .thenReturn(Observable.just(mock(List.class)));
+        User user = MockHelper.makeUser(USER_ID);
+        mPhotoPresenter.getPhotos(user);
+        verify(mMockPhotoMvpView).showLoading();
+        verify(mMockPhotoMvpView).hideLoading();
+        verify(mMockPhotoMvpView, times(0)).showPhotos(any(List.class));
+        verify(mMockPhotoMvpView, times(0)).showError(anyString());
+        verify(mMockPhotoMvpView, times((1))).showEmpty();
+
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mPhotoPresenter.detachView();
     }
 }
