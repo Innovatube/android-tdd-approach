@@ -752,7 +752,7 @@ public void testGetUserFail() {
 public interface LocalDataSource {
     void saveComment(List&lt;Comment> comments, int userId);
 
-    void savePhoto(List&lt;Photo> photos, int userId);
+    void savePhoto(List&lt;Photo&gt; photos, int userId);
 
     Observable&lt;List&lt;Comment&gt;&gt; getComments(int userId);
 
@@ -772,7 +772,7 @@ public class LocalDataSourceImpl implements LocalDataSource {
     }
 
     @Override
-    public void savePhoto(List&lt;Photo> photos, int userId) {
+    public void savePhoto(List&lt;Photo&gt; photos, int userId) {
 
     }
 
@@ -851,7 +851,7 @@ public class LocalDataSourceImplTest {
 public void testSaveComments() throws Exception {
     doCallRealMethod().when(mMockRealm).executeTransaction(Mockito.any(Realm.Transaction.class));
     int userId = 2;
-    List comments = DataFactory.makeComments(userId);
+    List comments = MockHelper.getComments();;
     mLocalDataSource.saveComment(comments, userId);
     verify(mMockRealm, times(1)).copyToRealmOrUpdate(comments);
     verify(mMockRealm, times(1)).close();
@@ -884,7 +884,7 @@ public void saveComment(List&lt;Comment> comments, int userId) {
             <code>LocalDataSourceImplTest</code>
             <pre><code>@Test
 public void testSavePhotos() throws Exception {
-    List photos = DataFactory.makePhotos(USER_ID);
+    List photos = MockHelper.getPhotos();
     mLocalDataSource.savePhotos(photos, USER_ID);
     verify(mMockRealm, times(1)).copyToRealmOrUpdate(photos);
     verify(mMockRealm,times(1)).close();
@@ -949,7 +949,7 @@ realm.copyFromRealm(null);
             <pre><code>@Override
 public Observable&lt;List&lt;Photo&gt;&gt; getPhotos(int userId) {
     Realm bgRealm = Realm.getDefaultInstance();
-    List&lt;Photo> photos = bgRealm
+    List&lt;Photo&gt; photos = bgRealm
             .where(Photo.class)
             .equalTo("userId", userId)
             .findAll();
@@ -1011,7 +1011,7 @@ public Observable&lt;List&lt;Photo&gt;&gt; getPhotos(int userId) {
     }
 
     @Override
-    public void savePhoto(List&lt;Photo> photos, int userId) {
+    public void savePhoto(List&lt;Photo&gt; photos, int userId) {
 
 
     }
@@ -1045,9 +1045,9 @@ public class PlaceHolderRepositoryImplTest {
     private PlaceHolderRepository mPlaceHolderRepository;
     private int USER_ID = 10;
 
-    private TestSubscriber<List<Comment>> commentsTestSubscriber = new TestSubscriber<>();
-    private TestSubscriber<List<Photo>> photosTestSubscriber = new TestSubscriber<>();
-    private TestSubscriber<List<User>> usersTestSubscriber = new TestSubscriber<>();
+    private TestSubscriber&lt;List&lt;Comment&gt;&gt; commentsTestSubscriber = new TestSubscriber<>();
+    private TestSubscriber&lt;List&lt;Photo&gt;&gt; photosTestSubscriber = new TestSubscriber<>();
+    private TestSubscriber&lt;List&lt;User&gt;&gt; usersTestSubscriber = new TestSubscriber<>();
 
     @Before
     public void setUp() throws Exception {
@@ -1058,7 +1058,7 @@ public class PlaceHolderRepositoryImplTest {
     }
     @Test
     public void testGetCommentsFromServer() throws Exception {
-        List&lt;Comment> comments = DataFactory.makeComments(USER_ID);
+        List&lt;Comment&gt; comments = MockHelper.getComments();
         when(mMockLocalDataSource.getComments(USER_ID))
                 .thenReturn(Observable.error(new Throwable()));
         when(mMockRemoteDataSource.getComments(USER_ID))
@@ -1086,7 +1086,7 @@ public Observable&lt;List&lt;Comment&gt;&gt; getComments(int userId) {
             <p>It's green now, we'll create another test method to get data from local.</p>
             <pre><code>@Test
 public void testGetCommentsFromLocal() throws Exception {
-    List&lt;Comment> comments = DataFactory.makeComments(USER_ID);
+    List&lt;Comment> comments = MockHelper.getComments();
     when(mMockLocalDataSource.getComments(USER_ID))
             .thenReturn(Observable.just(comments));
     when(mMockRemoteDataSource.getComments(USER_ID))
@@ -1143,7 +1143,7 @@ Actual values: [null, [com.example.androidtdd.data.model.Comment@365185bd, com.e
             <p>Good, now we move to the last step, save comment if it comes from remote</p>
             <pre><code>@Test
     public void testSaveCommentsComeFromServer() throws Exception {
-        List&lt;Comment> comments = DataFactory.makeComments(USER_ID);
+        List&lt;Comment> comments = MockHelper.getComments();
         when(mMockLocalDataSource.getComments(USER_ID))
                 .thenReturn(Observable.error(new Throwable()));
         when(mMockRemoteDataSource.getComments(USER_ID))
@@ -1180,7 +1180,7 @@ mMockLocalDataSource.saveComment(
             <code>PlaceHolderRepositoryImplTest</code>
             <pre><code>     @Test
     public void testGetPhotosFromServer() throws Exception {
-        List&lt;Photo> photos = DataFactory.makePhotos(USER_ID);
+        List&lt;Photo&gt; photos = MockHelper.getPhotos();
         when(mMockLocalDataSource.getPhotos(USER_ID))
                 .thenReturn(Observable.error(new Throwable()));
         when(mMockRemoteDataSource.getPhotos(USER_ID))
@@ -1194,7 +1194,7 @@ mMockLocalDataSource.saveComment(
 
     @Test
     public void testGetPhotosFromLocal() throws Exception {
-        List&lt;Photo> photos = DataFactory.makePhotos(USER_ID);
+        List&lt;Photo&gt; photos = MockHelper.getPhotos();
         when(mMockLocalDataSource.getPhotos(USER_ID))
                 .thenReturn(Observable.just(photos));
         when(mMockRemoteDataSource.getPhotos(USER_ID))
@@ -1208,7 +1208,7 @@ mMockLocalDataSource.saveComment(
 
     @Test
     public void testSavePhotosComeFromServer() throws Exception {
-        List&lt;Photo> photos = DataFactory.makePhotos(USER_ID);
+        List&lt;Photo&gt; photos = MockHelper.getPhotos();
         when(mMockLocalDataSource.getPhotos(USER_ID))
                 .thenReturn(Observable.error(new Throwable()));
         when(mMockRemoteDataSource.getPhotos(USER_ID))
@@ -1417,7 +1417,7 @@ public class HomePresenterTest {
             <code>HomePresenterTest</code>
             <pre><code>@Test
 public void testGetUsersSuccess() throws Exception {
-    List&lt;User> users = DataFactory.makeUsers();
+    List&lt;User&gt; users = MockHelper.getUsers();
     when(mMockRepository.getUsers()).thenReturn(Observable.just(users));
     mHomePresenter.getUsers();
     verify(mMockHomeMvpView).showLoading();
@@ -1486,7 +1486,7 @@ public void testGetUsersFailed() throws Exception {
             <pre><code>@Test
 public void testViewDetail() throws Exception {
     int userId = 1;
-    User user = DataFactory.makeUser(userId);
+    User user = MockHelper.getUsers();
     mHomePresenter.showDetail(user);
     verify(mMockHomeMvpView).viewDetail(user);
 }</code></pre>
@@ -1670,7 +1670,7 @@ public class HomeActivityTest {
                 .setResponseCode(200)
                 .setBody(usersInput)
                 .setBodyDelay(2000, TimeUnit.MILLISECONDS));
-        List<User> users = MockHelper.getUsers(usersInput, new Gson());
+        List&lt;User&gt; users = MockHelper.getUsers(usersInput, new Gson());
         mActivityTestRule.launchActivity(null);
         onView(withId(R.id.text_loading)).check(matches(isDisplayed()));
         Espresso.registerIdlingResources(EspressoIdlingResource.getIdlingResource());
@@ -1729,7 +1729,7 @@ public class HomeActivity extends BaseActivity implements HomeMvpView {
         mLoadingTextView.setVisibility(View.GONE);
     }
     @Override
-    public void showUsers(List&lt;User> users) {
+    public void showUsers(List&lt;User&gt; users) {
         
     }
     ...
@@ -1737,13 +1737,13 @@ public class HomeActivity extends BaseActivity implements HomeMvpView {
 }</code></pre>
             <code>UserAdapter</code> is:
             <pre><code>public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
-    private List&lt;User> users;
+    private List&lt;User&gt; users;
 
     public UserAdapter() {
         users = new ArrayList&lt;>();
     }
 
-    public void setUsers(List&lt;User> users) {
+    public void setUsers(List&lt;User&gt; users) {
         this.users = users;
         notifyItemRangeInserted(0, users.size());
     }
@@ -1823,7 +1823,7 @@ Got: "LinearLayout{id=-1, visibility=VISIBLE, width=704, height=156, has-focus=f
 .</code></pre>
             <p>Now we must implement <code>UserAdapter</code></p>
             <pre><code>public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
-    private List&lt;User> users;
+    private List&lt;User&gt; users;
 
    ....
 
@@ -1917,7 +1917,7 @@ public class HomeActivityTest {
 }</code></pre>
             <code>console</code>
             <pre><code>android.support.test.espresso.base.DefaultFailureHandler$AssertionFailedWithCauseError: Wanted to match 1 intents. Actually matched 0 intents.
-IntentMatcher: (resolvesTo: com.example.androidtdd.ui and has extras: has bundle with: key: is "SELECTED_USER" value: is <com.example.androidtdd.data.model.User@925a6de>)
+IntentMatcher: (resolvesTo: com.example.androidtdd.ui and has extras: has bundle with: key: is "SELECTED_USER" value: is &gt;com.example.androidtdd.data.model.User@925a6de&gt;)
 Matched intents:[]
 Recorded intents:[]</code></pre>
             <p>Now we'll implement this feature.</p>
